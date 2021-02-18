@@ -1,0 +1,94 @@
+1. basics: getting site up and running
+
+-install virtual environment and activate it
+python3 -m venv \path\to\myenv
+source myenv\bin\activate
+
+-install django
+pip install django
+
+-start django project (cd to correct dir)
+django-admin startproject mysite
+
+-check its all working correctly
+python manage.py runserver
+
+-(optional) runserver on different port if needed:
+python manage.py runserver 8080
+
+-create new webapp
+python manage.py startapp polls
+
+-change polls/views.py to whatever... e.g.
+from django.http import HttpResponse
+def index(request):
+    return HttpResponse("Hello, world. You're at the polls index.")
+
+-update polls/urls.py
+from django.urls import path
+from . import views
+urlpatterns = [
+    path('', views.index, name='index'),
+]
+
+-update mysite/urls.py
+from django.contrib import admin
+from django.urls import include, path
+urlpatterns = [
+    path('polls/', include('polls.urls')),
+    path('admin/', admin.site.urls),
+]
+
+-check it all works (ignore making migrations for now)
+python manage.py check
+python manage.py runserver
+
+
+2. set up database for webapp
+
+-open mysite/settings.py
+-if other database wanted, change database binding at
+DATABASES 'defualt'
+
+- migrate current structure
+python manage.py migrate
+
+- create models using OOP and django models, e.g.:
+from django.db import models
+Class Question(models.Model):
+    question_id=models.CharField(max_length=200)
+
+-add app to INSTALLED_APPS in mysite/settings.py:
+INSTALLED_APPS=['polls.apps.PollsConfig',...]
+
+- make migrations for app
+python manage.py makemigrations polls
+
+- (optional) can see SQL code if needed with:
+python manage.py sqlmigrate polls 0001
+
+- then migrate the migrations files
+python manage.py migrate
+
+- add data / test models with shell
+python mamage.py shell
+from polls.models import Choice, Quesition
+
+3. Create an admin user
+
+- run the following and add a username, email, and password
+python manage.py createsuperuser
+
+- start the server and go to localhost:8000/admin
+python manage.py runserver
+
+- make app modifiable in the admin. Within polls/admin.py:
+from django.contrib import admin
+from .models import Question
+admin.site.register(Question)
+
+4. Writing views
+
+
+
+
